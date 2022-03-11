@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ import org.springframework.security.web.authentication.session.ConcurrentSession
 import org.springframework.security.web.session.ConcurrentSessionFilter;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 
 /**
@@ -93,8 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         );
         loginFilter.setAuthenticationManager(authenticationManagerBean());
         loginFilter.setFilterProcessesUrl("/doLogin");
-        ConcurrentSessionControlAuthenticationStrategy sessionStrategy = new ConcurrentSessionControlAuthenticationStrategy(sessionRegistry());
-        sessionStrategy.setMaximumSessions(1);
+        ConcurrentSessionControlAuthenticationStrategy sessionStrategy = new CustomConcurrentSessionControlAuthenticationStrategy(sessionRegistry());
         loginFilter.setSessionAuthenticationStrategy(sessionStrategy);
         return loginFilter;
     }
