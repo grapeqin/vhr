@@ -107,9 +107,14 @@
     </select>
     <select id="getEmployeeByPage" resultMap="AllEmployeeInfo">
         select e.*,p.`id` as pid,p.`name` as pname,n.`id` as nid,n.`name` as nname,d.`id` as did,d.`name` as
-        dname,j.`id` as jid,j.`name` as jname,pos.`id` as posid,pos.`name` as posname from employee e,nation
-        n,politicsstatus p,department d,joblevel j,position pos where e.`nationId`=n.`id` and e.`politicId`=p.`id` and
-        e.`departmentId`=d.`id` and e.`jobLevelId`=j.`id` and e.`posId`=pos.`id`
+        dname,j.`id` as jid,j.`name` as jname,pos.`id` as posid,pos.`name` as posname
+        from employee e
+        left join nation n on e.`nationId`=n.`id`
+        left join politicsstatus p on e.`politicId`=p.`id`
+        left join department d on e.`departmentId`=d.`id`
+        left join joblevel j on e.`jobLevelId`=j.`id`
+        left join position pos on e.`posId`=pos.`id`
+        where 1=1
         <if test="emp.name !=null and emp.name!=''">
             and e.name like concat('%',#{emp.name},'%')
         </if>
@@ -135,7 +140,7 @@
             and e.beginDate between #{beginDateScope[0]} and #{beginDateScope[1]}
         </if>
         <if test="page !=null and size!=null">
-            limit #{page},#{size}
+           order by e.id desc limit #{page},#{size}
         </if>
     </select>
     <select id="getTotal" resultType="java.lang.Long">
