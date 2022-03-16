@@ -56,6 +56,11 @@ public class EmpBasicController {
         return RespBean.error("添加失败!");
     }
 
+    @PostMapping("/add")
+    public RespBean addEmpOfH5(@RequestBody Employee employee) {
+        return addEmp(employee);
+    }
+
     @DeleteMapping("/{id}")
     public RespBean deleteEmpByEid(@PathVariable Integer id) {
         if (employeeService.deleteEmpByEid(id) == 1) {

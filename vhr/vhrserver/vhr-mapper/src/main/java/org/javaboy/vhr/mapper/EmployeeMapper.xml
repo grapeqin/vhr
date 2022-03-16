@@ -121,6 +121,9 @@
         <if test="emp.workState !=null and emp.workState!=''">
             and e.workState = #{emp.workState}
         </if>
+        <if test="emp.idCard !=null and emp.idCard!=''">
+            and e.idCard = #{emp.idCard}
+        </if>
         <if test="emp.politicId !=null">
             and e.politicId =#{emp.politicId}
         </if>
