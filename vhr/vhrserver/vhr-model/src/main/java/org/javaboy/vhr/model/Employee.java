@@ -3,7 +3,10 @@ package org.javaboy.vhr.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class Employee implements Serializable {
     private Integer id;
@@ -382,5 +385,9 @@ public class Employee implements Serializable {
 
     public void setWorkAge(Integer workAge) {
         this.workAge = workAge;
+    }
+
+    public static List<String> getWorkStateList(){
+        return Arrays.asList("待面试","已录用","已拒绝");
     }
 }

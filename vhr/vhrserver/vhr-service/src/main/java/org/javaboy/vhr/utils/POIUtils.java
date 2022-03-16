@@ -28,7 +28,7 @@ import java.util.List;
  * @网站 http://www.javaboy.org
  * @时间 2019-11-11 23:25
  */
-public class POIUtils {
+public abstract class POIUtils {
 
     public static ResponseEntity<byte[]> employee2Excel(List<Employee> list) {
         //1. 创建一个 Excel 文档

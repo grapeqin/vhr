@@ -1,8 +1,13 @@
 package org.javaboy.vhr.controller.emp;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.listener.ReadListener;
 import org.javaboy.vhr.model.*;
 import org.javaboy.vhr.service.*;
 import org.javaboy.vhr.utils.POIUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/employee/basic")
 public class EmpBasicController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmpBasicController.class);
     @Autowired
     EmployeeService employeeService;
     @Autowired
@@ -111,5 +117,33 @@ public class EmpBasicController {
             return RespBean.ok("上传成功");
         }
         return RespBean.error("上传失败");
+    }
+
+    @PostMapping("/uploadWorkStates")
+    public RespBean batchUpdateWorkStateData(MultipartFile file) throws IOException{
+        EasyExcel.read(file.getInputStream(), BatchUpdateWorkStateData.class, new ReadListener<BatchUpdateWorkStateData>() {
+            @Override
+            public void invoke(BatchUpdateWorkStateData data, AnalysisContext context) {
+                resolve(data);
+            }
+
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext context) {
+
+            }
+
+            private void resolve(BatchUpdateWorkStateData data){
+                if(!Employee.getWorkStateList().contains(data.getWorkState())){
+                    LOGGER.warn("上传数据 " + data +" workState不合法");
+                    return;
+                }
+                Employee employee = new Employee();
+                employee.setIdCard(data.getIdCard());
+                employee.setWorkState(data.getWorkState());
+                int count = employeeService.updateWorkStateByIdCard(employee);
+                LOGGER.warn("上传数据 " + data +" 更新成功 " + count +" 条数据");
+            }
+        }).sheet().doRead();
+        return RespBean.ok("上传成功");
     }
 }

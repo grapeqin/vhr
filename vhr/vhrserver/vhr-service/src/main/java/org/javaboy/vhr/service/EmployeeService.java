@@ -88,6 +88,10 @@ public class EmployeeService {
         return employeeMapper.updateByPrimaryKeySelective(employee);
     }
 
+    public Integer updateWorkStateByIdCard(Employee employee){
+        return employeeMapper.updateByIdCard(employee);
+    }
+
     public Integer addEmps(List<Employee> list) {
         return employeeMapper.addEmps(list);
     }

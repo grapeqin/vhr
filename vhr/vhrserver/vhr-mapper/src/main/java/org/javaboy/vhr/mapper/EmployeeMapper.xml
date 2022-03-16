@@ -498,6 +498,9 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
+
+
+
     <update id="updateByPrimaryKey" parameterType="org.javaboy.vhr.model.Employee">
     update employee
     set name = #{name,jdbcType=VARCHAR},
@@ -529,4 +532,11 @@
       workAge = #{workAge,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+    <update id="updateByIdCard" parameterType="org.javaboy.vhr.model.Employee">
+        update employee
+        set workState = #{workState,jdbcType=CHAR}
+        where idCard = #{idCard,jdbcType=CHAR}
+    </update>
+
 </mapper>
