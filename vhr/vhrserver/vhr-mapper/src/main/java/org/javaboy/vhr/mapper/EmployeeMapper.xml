@@ -118,6 +118,9 @@
         <if test="emp.name !=null and emp.name!=''">
             and e.name like concat('%',#{emp.name},'%')
         </if>
+        <if test="emp.workState !=null and emp.workState!=''">
+            and e.workState = #{emp.workState}
+        </if>
         <if test="emp.politicId !=null">
             and e.politicId =#{emp.politicId}
         </if>
