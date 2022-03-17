@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.javaboy.vhr.mapper.SalaryRecordMapper" >
+  <resultMap id="BaseResultMap" type="org.javaboy.vhr.model.SalaryRecord" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="file_loc" property="fileLoc" jdbcType="VARCHAR" />
+    <result column="create_user" property="createUser" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, file_loc, create_user, create_time
+  </sql>
+
+  <select id="getSalaryRecordByPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from salary_record
+    where 1=1
+    <if test="beginDateScope !=null">
+      and DATE_FORMAT(create_time, " %Y-%m-%d") between #{beginDateScope[0]} and #{beginDateScope[1]}
+    </if>
+    <if test="page !=null and size!=null">
+      order by id desc limit #{page},#{size}
+    </if>
+  </select>
+
+  <select id="getTotal" resultType="java.lang.Long">
+    select count(*) from salary_record
+    <where>
+      <if test="beginDateScope !=null">
+        and DATE_FORMAT(create_time, " %Y-%m-%d") between #{beginDateScope[0]} and #{beginDateScope[1]}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from salary_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" parameterType="org.javaboy.vhr.model.SalaryRecord" >
+    insert into salary_record (id, file_loc, create_user)
+    values (#{id,jdbcType=INTEGER}, #{fileLoc,jdbcType=VARCHAR}, #{createUser,jdbcType=INTEGER})
+  </insert>
+
+</mapper>
