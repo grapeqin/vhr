@@ -52,26 +52,29 @@ public class EmployeeService {
     }
 
     public Integer addEmp(Employee employee) {
-        Date beginContract = employee.getBeginContract();
-        Date endContract = employee.getEndContract();
-        double month = (Double.parseDouble(yearFormat.format(endContract)) - Double.parseDouble(yearFormat.format(beginContract))) * 12 + (Double.parseDouble(monthFormat.format(endContract)) - Double.parseDouble(monthFormat.format(beginContract)));
-        employee.setContractTerm(Double.parseDouble(decimalFormat.format(month / 12)));
+        if(null!=employee.getBeginContract() && null!=employee.getEndContract()){
+            Date beginContract = employee.getBeginContract();
+            Date endContract = employee.getEndContract();
+            double month = (Double.parseDouble(yearFormat.format(endContract)) - Double.parseDouble(yearFormat.format(beginContract))) * 12 + (Double.parseDouble(monthFormat.format(endContract)) - Double.parseDouble(monthFormat.format(beginContract)));
+            employee.setContractTerm(Double.parseDouble(decimalFormat.format(month / 12)));
+        }
+
         if(null == employee.getWorkID() || "".equals(employee.getWorkID())){
             employee.setWorkID(String.format("%08d", this.maxWorkID() + 1));
         }
         int result = employeeMapper.insertSelective(employee);
         if (result == 1) {
-            Employee emp = employeeMapper.getEmployeeById(employee.getId());
+//            Employee emp = employeeMapper.getEmployeeById(employee.getId());
             //生成消息的唯一id
-            String msgId = UUID.randomUUID().toString();
-            MailSendLog mailSendLog = new MailSendLog();
-            mailSendLog.setMsgId(msgId);
-            mailSendLog.setCreateTime(new Date());
-            mailSendLog.setExchange(MailConstants.MAIL_EXCHANGE_NAME);
-            mailSendLog.setRouteKey(MailConstants.MAIL_ROUTING_KEY_NAME);
-            mailSendLog.setEmpId(emp.getId());
-            mailSendLog.setTryTime(new Date(System.currentTimeMillis() + 1000 * 60 * MailConstants.MSG_TIMEOUT));
-            mailSendLogService.insert(mailSendLog);
+//            String msgId = UUID.randomUUID().toString();
+//            MailSendLog mailSendLog = new MailSendLog();
+//            mailSendLog.setMsgId(msgId);
+//            mailSendLog.setCreateTime(new Date());
+//            mailSendLog.setExchange(MailConstants.MAIL_EXCHANGE_NAME);
+//            mailSendLog.setRouteKey(MailConstants.MAIL_ROUTING_KEY_NAME);
+//            mailSendLog.setEmpId(emp.getId());
+//            mailSendLog.setTryTime(new Date(System.currentTimeMillis() + 1000 * 60 * MailConstants.MSG_TIMEOUT));
+//            mailSendLogService.insert(mailSendLog);
             //TODO 通知功能暂时屏蔽
             // rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME, MailConstants.MAIL_ROUTING_KEY_NAME, emp, new CorrelationData(msgId));
         }
