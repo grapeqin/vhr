@@ -17,7 +17,7 @@
     from salary_record
     where 1=1
     <if test="beginDateScope !=null">
-      and DATE_FORMAT(create_time, " %Y-%m-%d") between #{beginDateScope[0]} and #{beginDateScope[1]}
+      and create_time between #{beginDateScope[0]} and #{beginDateScope[1]}
     </if>
     <if test="page !=null and size!=null">
       order by id desc limit #{page},#{size}
@@ -28,7 +28,7 @@
     select count(*) from salary_record
     <where>
       <if test="beginDateScope !=null">
-        and DATE_FORMAT(create_time, " %Y-%m-%d") between #{beginDateScope[0]} and #{beginDateScope[1]}
+        and create_time between #{beginDateScope[0]} and #{beginDateScope[1]}
       </if>
     </where>
   </select>
