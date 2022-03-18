@@ -1,5 +1,6 @@
 package org.javaboy.vhr.controller.salary;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.javaboy.vhr.model.RespBean;
 import org.javaboy.vhr.model.RespPageBean;
 import org.javaboy.vhr.model.SalaryRecord;
@@ -13,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,13 +50,27 @@ public class SalaryRecordController {
     }
 
     @GetMapping("/download")
-    public void download(HttpServletResponse response) throws UnsupportedEncodingException {
+    public void download(@RequestParam(defaultValue = "0") Integer id,HttpServletResponse response) throws IOException {
+        SalaryRecord salaryRecord = salaryRecordService.getById(id);
+        if(null == salaryRecord){
+            failure(response,RespBean.error("文件不存在!"));
+            return;
+        }
+        String fileLoc = salaryRecord.getFileLoc();
+        Path path = FileUtils.getFileName(fileLoc);
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("测试", "UTF-8").replaceAll("\\+", "%20");
+        String fileName = URLEncoder.encode(fileLoc, "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-        //TODO
+        Files.copy(path,response.getOutputStream());
     }
 
-
+    void failure(HttpServletResponse response,RespBean respBean) throws IOException {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        String s = new ObjectMapper().writeValueAsString(respBean);
+        out.write(s);
+        out.flush();
+        out.close();
+    }
 }
